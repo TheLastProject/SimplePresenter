@@ -8,14 +8,11 @@ Requires PHP: 5.4.16
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-A simple way to create presentations that can be viewed in a web browser, meant for usage in a company by displaying it
-on Raspberry Pi's.
+A simple way to create presentations that can be viewed in a web browser, meant for usage in a company by displaying it on Raspberry Pi's.
 
 == Description ==
 
-Simple Presenter was born out of a request within one of the companies I was assigned to to replace the current digital signage solution. Due to the
-fact that WordPress was used by everyone who had to manage it, and the lack of finding any solution that really worked
-for us without a huge investment of time, it was decided to code up our own WordPress plugin. This is that plugin.
+Simple Presenter was born out of a request within one of the companies I was assigned to to replace the current digital signage solution. Due to the fact that WordPress was used by everyone who had to manage it, and the lack of finding any solution that really worked for us without a huge investment of time, it was decided to code up our own WordPress plugin. This is that plugin.
 
 Simple Presenter allows you to:
 - Define an infinite number of screens
@@ -24,8 +21,7 @@ Simple Presenter allows you to:
 - An infinite number of extra slides (image + html)
 - Choose exactly what to display on which screen
 
-Simple Presenter is meant to be simple above powerful and is written for the purposes of a single company. However, it was decided the
-plugin is useful and generic enough to publish it for broader use.
+Simple Presenter is meant to be simple above powerful and is written for the purposes of a single company. However, it was decided the plugin is useful and generic enough to publish it for broader use.
 
 == Installation ==
 
@@ -37,9 +33,7 @@ plugin is useful and generic enough to publish it for broader use.
 
 = How can I best display these screens? =
 
-There are many ways to go about it, but personally, we've had good experiences with
-[FullPageOS](https://github.com/guysoft/FullPageOS) on a Raspberry Pi. Just put the correct screen URL provided in
-`/boot/fullpageos.txt`.
+There are many ways to go about it, but personally, we recommend [minimalKioskOS](https://github.com/TheLastProject/minimalKioskOS) on a Raspberry Pi. Just put the correct screen URL provided in `/boot/url.txt`.
 
 == Screenshots ==
 
@@ -50,5 +44,9 @@ There are many ways to go about it, but personally, we've had good experiences w
 
 == Changelog ==
 
-= 1.0 =
-* Initial release
+= 1.1 =
+* Enhancement - Can now only upload an image on extra slides and have it take the whole slide
+* Enhancement - Better explanations on extra slides screen
+* Fix - Feature images are now displayed completely in the generated HTML
+* Enhancement - Recommend minimalKioskOS instead of FullPageOS which can recover from connection issues
+* Fix - Formatting of README.txt for WordPress directory

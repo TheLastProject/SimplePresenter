@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple Presenter
 Description: A simple way to manage presentation screens (AKA: Digital Signage)
-Version: 1.0
+Version: 1.1
 Author: Sylvia van Os
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -119,7 +119,7 @@ function simplepresenter_admin_init() {
 
     $number = 0;
     foreach (array_keys($options) as $option) {
-        if (preg_match('/^extraslides_(\d+)$/', $option) && !empty($options[$option])) {
+        if (preg_match('/^extraslides_(\d+)$/', $option) && !(empty($options[$option]) && empty($options[sprintf('%s_image_url', $option)]))) {
             $number = $number + 1;
             add_settings_field(sprintf('extraslides_%d', $number), sprintf('Extra slide %d', $number), 'simplepresenter_setting_extraslides', 'simplepresenter_extraslides', 'simplepresenter_extraslides', array('name' => sprintf('extraslides_%d', $number), 'value' => $options[$option], 'image_value' => $options[$option . '_image_url']));
             add_settings_field(sprintf('extraslides_%d_showon', $number), sprintf('Show extra slide %d on...', $number), 'simplepresenter_setting_extraslides_showon', 'simplepresenter_extraslides', 'simplepresenter_extraslides', array('name' => sprintf('extraslides_%d_showon', $number), 'value' => $options[$option . '_showon']));
@@ -133,7 +133,7 @@ function simplepresenter_admin_init() {
 function simplepresenter_print_createfield_button_html($type) {
     echo "<input id='simplepresenter_addanotherbutton_" . $type . "' type='button' class='button' value='Add another' />";
 ?>
-<script>
+<script type="text/javascript">
     jQuery(document).ready(function($){
         $('#<?php echo "simplepresenter_addanotherbutton_" . $type ?>').click(function(e) {
             e.preventDefault();
@@ -233,7 +233,25 @@ jQuery(document).ready(function($){
 
 function simplepresenter_print_setting_tinymce($name, $value) {
     echo "<input id='simplepresenter_" . $name . "' type='hidden' />"; // Extra field with the name we want for consistency for jQuery "add another" button
-    wp_editor($value, "simplepresenter_options[" . $name . "]");
+    echo '<p id="simplepresenter_' . $name . '_explanation_text"><strong>The Add Media button will insert HTML into the text field below. If you just want to show an image, make sure the text field is empty and click the "Upload Image" button instead.</strong></p>';
+    wp_editor($value, "simplepresenter_options[" . $name . "]", array('textarea_rows' => 10));
+    if (empty($value)) {
+        echo "<input id='simplepresenter_" . $name . "_enable_editor_button' type='button' class='button' value='Add Custom HTML (Advanced)' />";
+        ?>
+            <script type="text/javascript">
+                jQuery(document).ready(function($){
+                    document.getElementById('<?php echo "wp-simplepresenter_options[" . $name . "]-wrap" ?>').style.display = "none";
+                    document.getElementById('<?php echo "simplepresenter_" . $name . "_explanation_text" ?>').style.display = "none";
+                    $('#<?php echo "simplepresenter_" . $name . "_enable_editor_button" ?>').click(function(e) {
+                        e.preventDefault();
+                        document.getElementById('<?php echo "wp-simplepresenter_options[" . $name . "]-wrap" ?>').style.display = "block";
+                        document.getElementById('<?php echo "simplepresenter_" . $name . "_explanation_text" ?>').style.display = "block";
+                        $(this).remove();
+                    });
+                });
+            </script>
+        <?php
+    }
 }
 
 function simplepresenter_print_setting_showon_html($name, $value) {
@@ -294,7 +312,11 @@ function simplepresenter_setting_calendar_url_showon($arguments) {
 }
 
 function simplepresenter_extraslides_text() {
-    echo '<p>Extra slides</p>';
+    echo '<p>An extra slide can have a lot of different styles. Here are some tricks to keep in mind:</p>';
+    echo '<ol>';
+    echo '<li>With "Upload Image" you can upload a feature image. This will fill the whole slide, unless custom HTML is added. If custom HTML is added, the feature image will display on the left half of the screen.</li>';
+    echo '<li>If no feature image is set, custom HTML will get the space of the whole slide.</li>';
+    echo '</ol>';
 }
 
 function simplepresenter_setting_extraslides($arguments) {
@@ -361,7 +383,7 @@ function simplepresenter_options_validate($input) {
     // Extra slides
     $number = 0;
     foreach (array_keys($input) as $inputoption) {
-        if (preg_match('/^extraslides_(\d+)$/', $inputoption) && !empty($input[$inputoption])) {
+        if (preg_match('/^extraslides_(\d+)$/', $inputoption) && !(empty($input[$inputoption]) && empty($input[sprintf('%s_image_url', $inputoption)]))) {
             $number = $number + 1;
             $newinput[sprintf('extraslides_%d', $number)] = $input[$inputoption];
             $newinput[sprintf('extraslides_%d_image_url', $number)] = $input[sprintf('%s_image_url', $inputoption)];
@@ -545,7 +567,7 @@ function simplepresenter_public_parse_request($wp) {
                     } else if (preg_match('/^extraslides_(\d+)$/', $option)) {
                         $slide = "";
                         if ($options[$option . "_image_url"]) {
-                            $slide = $slide . "<img class='feature_image' src='" . $options[$option . "_image_url"] . "'>";
+                            $slide = $slide . "<img class='feature_image " . (empty($options[$option]) ? 'fullpage' : '') . "' src='" . $options[$option . "_image_url"] . "'/>";
                         }
                         $slide = $slide . $options[$option];
                         $slides[] = $slide;
@@ -605,19 +627,23 @@ function simplepresenter_public_parse_request($wp) {
             border-radius: 20px 20px 20px 20px;
             overflow: hidden;
         }
-        .simplepresenter_slide * {
+        .simplepresenter_slide:not(img) {
             text-align: left;
         }
-        .simplepresenter_slide img {
-            max-height: 100%;
-            max-width: 100%;
-        }
         .simplepresenter_slide img.feature_image {
-            object-fit: cover;
+            object-fit: contain;
             float: left;
             max-width: 49%;
             height: 100%;
             padding-right: 2%;
+        }
+        .simplepresenter_slide img.fullpage {
+            float: left;
+            height: 100%;
+            width: 100%;
+            max-width: 100%;
+            padding-right: 0%;
+            margin: auto;
         }
         </style>
 

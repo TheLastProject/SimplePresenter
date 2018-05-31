@@ -1,0 +1,11 @@
+== Changelog ==
+
+= 1.1 =
+* Enhancement - Can now only upload an image on extra slides and have it take the whole slide
+* Enhancement - Better explanations on extra slides screen
+* Fix - Feature images are now displayed completely in the generated HTML
+* Enhancement - Recommend minimalKioskOS instead of FullPageOS which can recover from connection issues
+* Fix - Formatting of README.txt for WordPress directory
+
+= 1.0 =
+* Initial release
