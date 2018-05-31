@@ -517,7 +517,7 @@ function simplepresenter_public_parse_request($wp) {
         }
 
         if (empty($screen_option)) {
-            $slides = ["<h1>Screen " . $location . " does not exist. Please contact the administrator.</h1>"];
+            $slides = ["<h1>" . $location . "</h1><p><strong>Screen does not exist.</strong></p><p><small>If you believe this is an error, please contact your Simple Presenter administrator.</small></p>"];
         } else {
             $slides = [];
 
@@ -576,7 +576,7 @@ function simplepresenter_public_parse_request($wp) {
             }
 
             if (empty($slides)) {
-                $slides = ["<h1>Screen " . $location . " has no messages to display.</h1>"];
+                $slides = ["<h1>" . $location . "</h1><p><strong>There are no messages to display.</strong></p><p><small>If you believe this is an error, please contact your Simple Presenter administrator.</small></p>"];
             }
         }
 ?>
