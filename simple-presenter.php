@@ -123,6 +123,7 @@ function simplepresenter_admin_init() {
             $number = $number + 1;
             add_settings_field(sprintf('extraslides_%d', $number), sprintf('Extra slide %d', $number), 'simplepresenter_setting_extraslides', 'simplepresenter_extraslides', 'simplepresenter_extraslides', array('name' => sprintf('extraslides_%d', $number), 'value' => $options[$option], 'image_value' => $options[$option . '_image_url']));
             add_settings_field(sprintf('extraslides_%d_showon', $number), sprintf('Show extra slide %d on...', $number), 'simplepresenter_setting_extraslides_showon', 'simplepresenter_extraslides', 'simplepresenter_extraslides', array('name' => sprintf('extraslides_%d_showon', $number), 'value' => $options[$option . '_showon']));
+            add_settings_field(sprintf('extraslides_%d_displaytime', $number), sprintf('Show extra slide %d for...', $number), 'simplepresenter_setting_extraslides_displaytime', 'simplepresenter_extraslides', 'simplepresenter_extraslides', array('name' => sprintf('extraslides_%d_displaytime', $number), 'value' => $options[$option . '_displaytime']));
             add_settings_field(sprintf('delete_extraslide_%d_button', $number), sprintf('Delete extra slide %d', $number), 'simplepresenter_print_deletefield_button_html', 'simplepresenter_extraslides', 'simplepresenter_extraslides', sprintf('extraslides_%d', $number));
             add_settings_field(sprintf('extraslides_%d_horizontal_line', $number), '', 'simplepresenter_print_hr', 'simplepresenter_extraslides', 'simplepresenter_extraslides', sprintf('extraslides_%d_horizontal_line', $number));
         }
@@ -328,6 +329,11 @@ function simplepresenter_setting_extraslides_showon($arguments) {
     simplepresenter_print_setting_showon_html($arguments['name'], $arguments['value']);
 }
 
+function simplepresenter_setting_extraslides_displaytime($arguments) {
+    simplepresenter_print_setting_html($arguments['name'], $arguments['value'], 'number', 'placeholder="10"');
+    echo ' seconds';
+}
+
 function simplepresenter_options_validate($input) {
     $newinput = array();
 
@@ -388,6 +394,7 @@ function simplepresenter_options_validate($input) {
             $newinput[sprintf('extraslides_%d', $number)] = $input[$inputoption];
             $newinput[sprintf('extraslides_%d_image_url', $number)] = $input[sprintf('%s_image_url', $inputoption)];
             $newinput[sprintf('extraslides_%d_showon', $number)] = $input[sprintf('%s_showon', $inputoption)];
+            $newinput[sprintf('extraslides_%d_displaytime', $number)] = $input[sprintf('%s_displaytime', $inputoption)];
         }
     }
 
@@ -444,6 +451,9 @@ function simplepresenter_admin_parse_request($wp) {
                 echo "</td></tr>";
                 echo "<tr><th scope='row'>Show extra slide $number on...</th><td>";
                 simplepresenter_setting_extraslides_showon(array('name' => sprintf('extraslides_%d_showon', $number), 'value' => array()));
+                echo "</td></tr>";
+                echo "<tr><th scope='row'>Show extra slide $number for...</th><td>";
+                simplepresenter_setting_extraslides_displaytime(array('name' => sprintf('extraslides_%d_displaytime', $number), 'value' => array()));
                 echo "</td></tr>";
                 echo "<tr><th scope='row'>Delete extra slide $number</th><td>";
                 simplepresenter_print_deletefield_button_html(sprintf('extraslides_%d', $number));
@@ -565,11 +575,11 @@ function simplepresenter_public_parse_request($wp) {
                             $slides[] = "<h1>" . implode("</br>", $categories) . "</h1><p>" . $timestring . ($event['venue']['venue'] ? " | " : " ") . $event['venue']['venue'] . "</p><p><em>" . $event['title'] . "</em></p><p>" . $event['excerpt'] . "</p>";
                         }
                     } else if (preg_match('/^extraslides_(\d+)$/', $option)) {
-                        $slide = "";
+                        $slide = "<div data-time='" . $options[$option . "_displaytime"] . "'>";
                         if ($options[$option . "_image_url"]) {
                             $slide = $slide . "<img class='feature_image " . (empty($options[$option]) ? 'fullpage' : '') . "' src='" . $options[$option . "_image_url"] . "'/>";
                         }
-                        $slide = $slide . $options[$option];
+                        $slide = $slide . $options[$option] . "</div>";
                         $slides[] = $slide;
                     }
                 }
@@ -627,7 +637,11 @@ function simplepresenter_public_parse_request($wp) {
             border-radius: 20px 20px 20px 20px;
             overflow: hidden;
         }
-        .simplepresenter_slide * {
+        .simplepresenter_slide div {
+            width: 100%;
+            height: 100%;
+        }
+        .simplepresenter_slide iframe {
             max-width: 100%;
             max-height: 100%;
         }
@@ -681,7 +695,7 @@ function simplepresenter_public_parse_request($wp) {
 
         function queue_next_slide(force_time) {
             clearTimeout(nextSlideTimer);
-            nextSlideTimer = setTimeout(next_slide, typeof force_time !== 'undefined' ? force_time : slideLength);
+            nextSlideTimer = setTimeout(next_slide, force_time ? force_time : slideLength);
         }
 
         function next_slide() {
@@ -700,7 +714,8 @@ function simplepresenter_public_parse_request($wp) {
             currentSlide.style.display = "inline-block";
 
             currentSlideId++;
-            queue_next_slide();
+            var customSlideTime = currentSlide.children[0].getAttribute("data-time");
+            queue_next_slide(customSlideTime ? (customSlideTime * 1000) : null);
         }
         </script>
 
