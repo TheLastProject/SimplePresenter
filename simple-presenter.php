@@ -678,14 +678,14 @@ function simplepresenter_public_parse_request($wp) {
                     } else {
                         currentSlideId -= 2;
                     }
-                    queue_next_slide(0);
+                    queue_next_slide(1);
                     break;
 
                 case 39:
                     if (currentSlideId >= document.getElementsByClassName("simplepresenter_slide").length) {
                         currentSlideId = 0;
                     }
-                    queue_next_slide(0);
+                    queue_next_slide(1);
                     break;
 
                 default:
