@@ -591,7 +591,7 @@ function simplepresenter_public_parse_request($wp) {
         <div id='simplepresenter_logo'></div>
 
         <?php foreach ($slides as $slide) { ?>
-            <div class='simplepresenter_slide'><?php echo $slide ?></div>
+            <div class='simplepresenter_slide'><?php echo apply_filters('the_content', $slide) ?></div>
         <?php } ?>
 
         <style>
@@ -626,6 +626,10 @@ function simplepresenter_public_parse_request($wp) {
             padding: 10px 10px;
             border-radius: 20px 20px 20px 20px;
             overflow: hidden;
+        }
+        .simplepresenter_slide * {
+            max-width: 100%;
+            max-height: 100%;
         }
         .simplepresenter_slide:not(img) {
             text-align: left;
