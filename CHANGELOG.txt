@@ -1,5 +1,10 @@
 == Changelog ==
 
+= 1.2 =
+* Enhancement - Error messages are now prettier
+* Enhancement - Extra slides can now use WordPress shortcodes
+* Enhancement - Can now change display length per extra slide
+
 = 1.1 =
 * Enhancement - Can now only upload an image on extra slides and have it take the whole slide
 * Enhancement - Better explanations on extra slides screen

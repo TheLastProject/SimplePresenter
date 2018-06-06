@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple Presenter
 Description: A simple way to manage presentation screens (AKA: Digital Signage)
-Version: 1.1
+Version: 1.2
 Author: Sylvia van Os
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
