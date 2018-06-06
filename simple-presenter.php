@@ -641,7 +641,7 @@ function simplepresenter_public_parse_request($wp) {
             width: 100%;
             height: 100%;
         }
-        .simplepresenter_slide iframe {
+        .simplepresenter_slide * {
             max-width: 100%;
             max-height: 100%;
         }
