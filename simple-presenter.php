@@ -670,7 +670,7 @@ function simplepresenter_public_parse_request($wp) {
         var slideLength = 10000;
         var nextSlideTimer = setTimeout(next_slide, 0);
 
-        document.onkeydown = function (e) {
+        document.addEventListener('keydown', function (e) {
             switch (e.keyCode) {
                 case 37:
                     if (currentSlideId <= 1) {
@@ -688,14 +688,33 @@ function simplepresenter_public_parse_request($wp) {
                     queue_next_slide(1);
                     break;
 
+                case 70:
+                    fullscreen_slide_content();
+                    break;
+
                 default:
                     return;
             }
-        };
+        });
 
         function queue_next_slide(force_time) {
             clearTimeout(nextSlideTimer);
             nextSlideTimer = setTimeout(next_slide, force_time ? force_time : slideLength);
+        }
+
+        function fullscreen_slide_content() {
+            var slides = document.getElementsByClassName("simplepresenter_slide");
+            var currentSlide = slides[currentSlideId - 1];
+            var element = currentSlide.querySelector("*[allowfullscreen]")
+            if (element) {
+                if (element.requestFullScreen) {
+                    element.requestFullScreen();
+                } else if (element.mozRequestFullScreen) {
+                    element.mozRequestFullScreen();
+                } else if (element.webkitRequestFullScreen) {
+                    element.webkitRequestFullScreen();
+                }
+            }
         }
 
         function next_slide() {
@@ -716,6 +735,14 @@ function simplepresenter_public_parse_request($wp) {
             currentSlideId++;
             var customSlideTime = currentSlide.children[0].getAttribute("data-time");
             queue_next_slide(customSlideTime ? (customSlideTime * 1000) : null);
+
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
         }
         </script>
 
