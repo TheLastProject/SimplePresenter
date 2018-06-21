@@ -33,7 +33,12 @@ Simple Presenter is meant to be simple above powerful and is written for the pur
 
 = How can I best display these screens? =
 
-There are many ways to go about it, but personally, we recommend [minimalKioskOS](https://github.com/TheLastProject/minimalKioskOS) on a Raspberry Pi. Just put the correct screen URL provided in `/boot/url.txt`.
+There are many ways to go about it, but personally, we recommend [minimalKioskOS](https://github.com/TheLastProject/minimalKioskOS) on a Raspberry Pi.
+
+The recommended settings are as follows:
+- /boot/mutesound.txt: 10
+- /boot/spamkey.txt: f (if you want videos to play fullscreen, otherwise empty)
+- /boot/url.txt: The URL shown on "View screen X"
 
 = Can I show video? =
 
