@@ -668,7 +668,9 @@ function simplepresenter_public_parse_request($wp) {
         <script>
         var currentSlideId = 0;
         var slideLength = 10000;
-        var nextSlideTimer = setTimeout(next_slide, 0);
+        var nextSlideTimer = null;
+
+        next_slide();
 
         document.addEventListener('keydown', function (e) {
             switch (e.keyCode) {
@@ -727,12 +729,22 @@ function simplepresenter_public_parse_request($wp) {
 
             for (var i = 0; i < slides.length; i++) {
                 slides[i].style.display = "none";
+                var frames = slides[i].getElementsByTagName("iframe");
+                for (var j = 0; j < frames.length; j++) {
+                   frames[j].contentWindow.location.href = "about:blank";
+                }
             }
 
             var currentSlide = slides[currentSlideId];
             currentSlide.style.display = "inline-block";
 
             currentSlideId++;
+
+            var frames = currentSlide.getElementsByTagName("iframe");
+            for (var i = 0; i < frames.length; i++) {
+                frames[i].contentWindows.location.href = frames[i].src;
+            }
+
             var customSlideTime = currentSlide.children[0].getAttribute("data-time");
             queue_next_slide(customSlideTime ? (customSlideTime * 1000) : null);
 
