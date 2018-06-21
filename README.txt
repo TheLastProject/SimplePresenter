@@ -57,7 +57,6 @@ Some gotchas:
 
 == Changelog ==
 
-= 1.2 =
-* Enhancement - Error messages are now prettier
-* Enhancement - Extra slides can now use WordPress shortcodes
-* Enhancement - Can now change display length per extra slide
+= 1.3 =
+* Enhancement - Press f to fullscreen a page's first "allowfullscreen" element
+* Fix - Ensure iframes are cleared to prevent iframe caching issues or noisiness

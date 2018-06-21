@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple Presenter
 Description: A simple way to manage presentation screens (AKA: Digital Signage)
-Version: 1.2
+Version: 1.3
 Author: Sylvia van Os
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -317,6 +317,8 @@ function simplepresenter_extraslides_text() {
     echo '<ol>';
     echo '<li>With "Upload Image" you can upload a feature image. This will fill the whole slide, unless custom HTML is added. If custom HTML is added, the feature image will display on the left half of the screen.</li>';
     echo '<li>If no feature image is set, custom HTML will get the space of the whole slide.</li>';
+    echo '<li>For custom HTML content that should fill the slide, consider using high width and height values such as 99999. Simple Presenter will ensure it will stay within the slide frame.</li>';
+    echo '<li>If you set "allowfullscreen" on any custom HTML element, the first element on the slide will fullscreen when the user presses f.</li>';
     echo '</ol>';
 }
 
