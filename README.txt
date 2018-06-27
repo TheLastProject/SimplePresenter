@@ -57,6 +57,5 @@ Some gotchas:
 
 == Changelog ==
 
-= 1.3 =
-* Enhancement - Press f to fullscreen a page's first "allowfullscreen" element
-* Fix - Ensure iframes are cleared to prevent iframe caching issues or noisiness
+= 1.3.1 =
+* Fix - Ensure "Add another" button will not generate a new entry with an existing ID

@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple Presenter
 Description: A simple way to manage presentation screens (AKA: Digital Signage)
-Version: 1.3
+Version: 1.3.1
 Author: Sylvia van Os
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -138,7 +138,9 @@ function simplepresenter_print_createfield_button_html($type) {
     jQuery(document).ready(function($){
         $('#<?php echo "simplepresenter_addanotherbutton_" . $type ?>').click(function(e) {
             e.preventDefault();
-            $.get("<?php echo get_site_url() ?>/", {simplepresenteradmin: 'true', type: '<?php echo $type ?>', number: $('[id^="simplepresenter_<?php echo $type ?>_"]').filter(function(i) { return $(this).attr('id').match(/\d+$/)}).length + 1}).done(function(data) {
+            var existingids = $('[id^="simplepresenter_<?php echo $type ?>_"]').filter(function(i) { return $(this).attr('id').match(/\d+$/)});
+            var nextnumber = existingids.length ? parseInt($(existingids).last().attr('id').match(/\d+$/)) + 1 : 1;
+            $.get("<?php echo get_site_url() ?>/", {simplepresenteradmin: 'true', type: '<?php echo $type ?>', number: nextnumber}).done(function(data) {
                 $(data).insertBefore($(e.target).parent().parent());
             });
         });
