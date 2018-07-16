@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple Presenter
 Description: A simple way to manage presentation screens (AKA: Digital Signage)
-Version: 1.3.1
+Version: 1.4
 Author: Sylvia van Os
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -91,6 +91,7 @@ function simplepresenter_admin_init() {
         if (preg_match('/^screen_(\d+)$/', $option) && !empty($options[$option])) {
             $number = $number + 1;
             add_settings_field(sprintf('screen_%d', $number), sprintf('Screen %d', $number), 'simplepresenter_setting_screen', 'simplepresenter_screen', 'simplepresenter_screen', array('name' => sprintf('screen_%d', $number), 'value' => $options[$option], 'image_value' => $options[$option . '_image_url']));
+            add_settings_field(sprintf('screen_%d_text_scale', $number), sprintf('Screen %d text size scale', $number), 'simplepresenter_print_setting_html', 'simplepresenter_screen', 'simplepresenter_screen', array('name' => sprintf('screen_%d_text_scale', $number), 'value' => $options[$option . '_text_scale'] ? $options[$option . '_text_scale'] : "1", 'type' => 'range', 'extra' => 'min="0.1" max="2" step="0.1"'));
             add_settings_field(sprintf('screen_%d_background_color', $number), sprintf('Screen %d background color', $number), 'simplepresenter_print_colorselect_button_html', 'simplepresenter_screen', 'simplepresenter_screen', array('name' => sprintf('screen_%d_background_color', $number), 'value' => $options[$option . '_background_color'] ? $options[$option . '_background_color'] : "#ffffff"));
             add_settings_field(sprintf('screen_%d_text_color', $number), sprintf('Screen %d text color', $number), 'simplepresenter_print_colorselect_button_html', 'simplepresenter_screen', 'simplepresenter_screen', array('name' => sprintf('screen_%d_text_color', $number), 'value' => $options[$option . '_text_color']));
             add_settings_field(sprintf('view_screen_%d_button', $number), sprintf('View screen %d', $number), 'simplepresenter_print_viewscreen_button_html', 'simplepresenter_screen', 'simplepresenter_screen', array('name' => sprintf('screen_%d_view', $number), 'value' => $options[$option]));
@@ -181,7 +182,11 @@ function simplepresenter_print_deletefield_button_html($name) {
 <?php
 }
 
-function simplepresenter_print_setting_html($name, $value, $type, $extra = '') {
+function simplepresenter_print_setting_html($arguments) {
+    $name = $arguments['name'];
+    $value = $arguments['value'];
+    $type = $arguments['type'];
+    $extra = $arguments['extra'];
     echo "<input id='simplepresenter_$name' name='simplepresenter_options[$name]' size='40' type='$type' value='$value' $extra />";
 }
 
@@ -281,7 +286,9 @@ function simplepresenter_screen_text() {
 
 function simplepresenter_setting_screen($arguments) {
     simplepresenter_print_setting_imageupload($arguments['name'], $arguments['value'], $arguments['image_value']);
-    simplepresenter_print_setting_html($arguments['name'], $arguments['value'], 'text', empty($arguments['value']) ? '' : 'readonly');
+    $arguments['type'] = 'text';
+    $arguments['extra'] = empty($arguments['value']) ? '' : 'readonly';
+    simplepresenter_print_setting_html($arguments);
 }
 
 function simplepresenter_calendar_text() {
@@ -289,7 +296,9 @@ function simplepresenter_calendar_text() {
 }
 
 function simplepresenter_setting_calendar_url($arguments) {
-    simplepresenter_print_setting_html($arguments['name'], $arguments['value'], 'url');
+    $arguments['type'] = $url;
+    $arguments['extra'] = '';
+    simplepresenter_print_setting_html($arguments);
 }
 
 function simplepresenter_setting_calendar_url_type($arguments) {
@@ -334,7 +343,9 @@ function simplepresenter_setting_extraslides_showon($arguments) {
 }
 
 function simplepresenter_setting_extraslides_displaytime($arguments) {
-    simplepresenter_print_setting_html($arguments['name'], $arguments['value'], 'number', 'placeholder="10"');
+    $arguments['type'] = 'number';
+    $arguments['extra'] = 'placeholder="10"';
+    simplepresenter_print_setting_html($arguments);
     echo ' seconds';
 }
 
@@ -373,6 +384,7 @@ function simplepresenter_options_validate($input) {
             $number = $number + 1;
             $newinput[sprintf('screen_%d', $number)] = trim($input[$inputoption]);
             $newinput[sprintf('screen_%d_background_color', $number)] = $input[sprintf('%s_background_color', $inputoption)];
+            $newinput[sprintf('screen_%d_text_scale', $number)] = $input[sprintf('%s_text_scale', $inputoption)];
             $newinput[sprintf('screen_%d_text_color', $number)] = $input[sprintf('%s_text_color', $inputoption)];
             $newinput[sprintf('screen_%d_image_url', $number)] = $input[sprintf('%s_image_url', $inputoption)];
         }
@@ -415,6 +427,9 @@ function simplepresenter_admin_parse_request($wp) {
             case 'screen':
                 echo "<tr><th scope='row'>Screen $number</th><td>";
                 simplepresenter_setting_screen(array('name' => sprintf('screen_%d', $number), 'value' => ''));
+                echo "</td></tr>";
+                echo "<th scope='row'>Screen $number text scale</th><td>";
+                simplepresenter_print_setting_html(array('name' => sprintf('screen_%d_text_scale', $number), 'value' => $options[$option . '_text_scale'] ? $options[$option . '_text_scale'] : "1", 'type' => 'range', 'extra' => 'min="0.1" max="2" step="0.1"'));
                 echo "</td></tr>";
                 echo "<tr><th scope='row'>Screen $number background color</th><td>";
                 simplepresenter_print_colorselect_button_html(array('name' => sprintf('screen_%d_background_color', $number), 'value' => '#ffffff'));
@@ -613,7 +628,7 @@ function simplepresenter_public_parse_request($wp) {
             width: 100%;
             height: 100%;
             position: relative;
-            font-size: 250%;
+            font-size: <?php echo ($options[$screen_option . "_text_scale"] ? $options[$screen_option . "_text_scale"] : 1) * 250 ?>%;
             font-family: Verdana, Geneva, sans-serif;
             background-color: <?php echo $options[$screen_option . "_background_color"] ?>;
             color: <?php echo $options[$screen_option . "_text_color"] ?>;

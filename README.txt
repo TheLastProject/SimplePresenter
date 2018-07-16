@@ -57,5 +57,5 @@ Some gotchas:
 
 == Changelog ==
 
-= 1.3.1 =
-* Fix - Ensure "Add another" button will not generate a new entry with an existing ID
+= 1.4 =
+* Enhancement - The text scale can now be set per-screen to be half to double the default
