@@ -1,4 +1,7 @@
 == Changelog ==
+= 1.4.1 =
+* Fix - JavaScript typo causing iframes to cause a JavaScript error
+
 = 1.4 =
 * Enhancement - The text scale can now be set per-screen to be half to double the default
 

@@ -1,7 +1,7 @@
 === Simple Presenter ===
 Contributors: sylviavanos
 Tags: presentation, monitor, raspberry, pi, digital signage
-Requires at least: 4.9.5
+Requires at least: 4.9.4
 Tested up to: 4.9
 Stable tag: 1.4
 Requires PHP: 5.4.16
@@ -57,5 +57,5 @@ Some gotchas:
 
 == Changelog ==
 
-= 1.4 =
-* Enhancement - The text scale can now be set per-screen to be half to double the default
+= 1.4.1 =
+* Fix - JavaScript typo causing iframes to cause a JavaScript error

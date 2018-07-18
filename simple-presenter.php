@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple Presenter
 Description: A simple way to manage presentation screens (AKA: Digital Signage)
-Version: 1.4
+Version: 1.4.1
 Author: Sylvia van Os
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -761,7 +761,7 @@ function simplepresenter_public_parse_request($wp) {
 
             var frames = currentSlide.getElementsByTagName("iframe");
             for (var i = 0; i < frames.length; i++) {
-                frames[i].contentWindows.location.href = frames[i].src;
+                frames[i].contentWindow.location.href = frames[i].src;
             }
 
             var customSlideTime = currentSlide.children[0].getAttribute("data-time");
