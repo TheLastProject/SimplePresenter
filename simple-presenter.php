@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple Presenter
 Description: A simple way to manage presentation screens (AKA: Digital Signage)
-Version: 1.4.2
+Version: 1.5
 Author: Sylvia van Os
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -26,7 +26,7 @@ if (!defined('WPINC')) {
 }
 
 if (is_admin()) {
-    add_action('admin_menu', 'simplepresenter_add_menu');
+    add_action('admin_menu', 'simplepresenter_add_menu_page');
     add_action('admin_init', 'simplepresenter_admin_init');
     add_action("admin_enqueue_scripts", "simplepresenter_enqueue_media_uploader");
 }
@@ -76,8 +76,8 @@ function simplepresenter_enqueue_media_uploader()
     wp_enqueue_media();
 }
 
-function simplepresenter_add_menu() {
-    add_options_page('Simple Presenter', 'Simple Presenter', 'manage_options', 'simplepresenter-plugin', 'simplepresenter_options_page');
+function simplepresenter_add_menu_page() {
+    add_menu_page('Simple Presenter', 'Simple Presenter', 'manage_simplepresenter', 'simplepresenter-plugin', 'simplepresenter_options_page');
 }
 
 function simplepresenter_admin_init() {
@@ -329,7 +329,7 @@ function simplepresenter_extraslides_text() {
     echo '<li>With "Upload Image" you can upload a feature image. This will fill the whole slide, unless custom HTML is added. If custom HTML is added, the feature image will display on the left half of the screen.</li>';
     echo '<li>If no feature image is set, custom HTML will get the space of the whole slide.</li>';
     echo '<li>For custom HTML content that should fill the slide, consider using high width and height values such as 99999. Simple Presenter will ensure it will stay within the slide frame.</li>';
-    echo '<li>If you set "allowfullscreen" on any custom HTML element, the first element on the slide will fullscreen when the user presses f.</li>';
+    echo '<li>When embedding video, such as from YouTube, ensure that autoplay is enabled.</li>';
     echo '</ol>';
 }
 
@@ -531,15 +531,11 @@ function simplepresenter_calendar_tribejson_format_date($details, $compareto = a
 }
 
 function simplepresenter_public_parse_request($wp) {
-    // iframe caching can cause the weirdest bugs
-    header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-    header("Cache-Control: post-check=0, pre-check=0", false);
-    header("Pragma: no-cache");
-
     if (array_key_exists('simplepresenter', $wp->query_vars)) {
         $options = get_option('simplepresenter_options', array());
 
         $location = $wp->query_vars['simplepresenter'];
+
         $screen_option = "";
         foreach (array_keys($options) as $option) {
             if (preg_match('/^screen_(\d+)$/', $option) && !empty($options[$option])) {
@@ -603,7 +599,7 @@ function simplepresenter_public_parse_request($wp) {
                         if ($options[$option . "_image_url"]) {
                             $slide = $slide . "<img class='feature_image " . (empty($options[$option]) ? 'fullpage' : '') . "' src='" . $options[$option . "_image_url"] . "'/>";
                         }
-                        $slide = $slide . "<iframe allowfullscreen='true' width='100%' height='100%' style='border:none; overflow:hidden;' scrolling='no' src='about:blank' srcdoc='<center>" . trim(htmlspecialchars(apply_filters('the_content', $options[$option]))) . "</center>'></iframe></div>";
+                        $slide = $slide . "<iframe " . ($options[$option . "_image_url"] ? "" : "allowfullscreen='true'") . " width='100%' height='100%' style='border:none; overflow:hidden;' scrolling='no' src='about:blank' data-srcdoc='<center>" . trim(htmlspecialchars(apply_filters('the_content', $options[$option]))) . "</center>'></iframe></div>";
                         $slides[] = $slide;
                     }
                 }
@@ -753,6 +749,10 @@ function simplepresenter_public_parse_request($wp) {
 
             for (var i = 0; i < slides.length; i++) {
                 slides[i].style.display = "none";
+                var frames = slides[i].getElementsByTagName("iframe");
+                for (var j = 0; j < frames.length; j++) {
+                   frames[j].srcdoc = "";
+                }
             }
 
             var currentSlide = slides[currentSlideId];
@@ -762,7 +762,7 @@ function simplepresenter_public_parse_request($wp) {
 
             var frames = currentSlide.getElementsByTagName("iframe");
             for (var i = 0; i < frames.length; i++) {
-                frames[i].contentWindow.location.reload();
+                frames[i].srcdoc = frames[i].dataset.srcdoc;
             }
 
             var customSlideTime = currentSlide.children[0].getAttribute("data-time");
@@ -792,3 +792,9 @@ function simplepresenter_public_query_vars($vars) {
 }
 add_filter('query_vars', 'simplepresenter_public_query_vars');
 
+function simplepresenter_add_cap()
+{
+    $role = get_role('administrator');
+    $role->add_cap('manage_simplepresenter', true);
+}
+add_action('init', 'simplepresenter_add_cap', 11);

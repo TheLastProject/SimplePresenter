@@ -3,7 +3,7 @@ Contributors: sylviavanos
 Tags: presentation, monitor, raspberry, pi, digital signage
 Requires at least: 4.9.4
 Tested up to: 4.9
-Stable tag: 1.4.2
+Stable tag: 1.5
 Requires PHP: 5.4.16
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -18,8 +18,9 @@ Simple Presenter allows you to:
 - Define an infinite number of screens
 - Set a logo image, background color and text color for each screen
 - Show events from an infinite number of calendars (only Tribe via the JSON API is currently supported, max 5 events per calendar are shown)
-- An infinite number of extra slides of practically any content (image, html, shortcodes, etc.)
+- An infinite number of extra slides of practically any content (image, html, shortcodes, embeds, etc.)
 - Choose exactly what to display on which screen
+- Control who can manage Simple Presenter using the manage_simplepresenter capability (may require third-party plugins)
 
 Simple Presenter is meant to be simple above powerful and is written for the purposes of a single company. However, it was decided the plugin is useful and generic enough to publish it for broader use.
 
@@ -57,5 +58,7 @@ Some gotchas:
 
 == Changelog ==
 
-= 1.4.2 =
-* Fix - Make Twitter embeds behave by putting every extra slide in their own iframe
+= 1.5 =
+* Enhancement - Add custom capability (manage_simplepresenter) to allow more control over who can manage it
+* Fix - Regression in 1.4.2 causing the feature image to not be shown
+* Fix - Improve reliability loading embeds/iframes

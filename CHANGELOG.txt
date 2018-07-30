@@ -1,4 +1,9 @@
 == Changelog ==
+= 1.5 =
+* Enhancement - Add custom capability (manage_simplepresenter) to allow more control over who can manage it
+* Fix - Regression in 1.4.2 causing the feature image to not be shown
+* Fix - Improve reliability loading embeds/iframes
+
 = 1.4.2 =
 * Fix - Make Twitter embeds behave by putting every extra slide in their own iframe
 
