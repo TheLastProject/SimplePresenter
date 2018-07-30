@@ -57,5 +57,5 @@ Some gotchas:
 
 == Changelog ==
 
-= 1.4.1 =
-* Fix - JavaScript typo causing iframes to cause a JavaScript error
+= 1.4.2 =
+* Fix - Make Twitter embeds behave by putting every extra slide in their own iframe

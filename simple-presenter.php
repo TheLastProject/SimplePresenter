@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple Presenter
 Description: A simple way to manage presentation screens (AKA: Digital Signage)
-Version: 1.4.1
+Version: 1.4.2
 Author: Sylvia van Os
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -531,6 +531,11 @@ function simplepresenter_calendar_tribejson_format_date($details, $compareto = a
 }
 
 function simplepresenter_public_parse_request($wp) {
+    // iframe caching can cause the weirdest bugs
+    header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+    header("Cache-Control: post-check=0, pre-check=0", false);
+    header("Pragma: no-cache");
+
     if (array_key_exists('simplepresenter', $wp->query_vars)) {
         $options = get_option('simplepresenter_options', array());
 
@@ -598,7 +603,7 @@ function simplepresenter_public_parse_request($wp) {
                         if ($options[$option . "_image_url"]) {
                             $slide = $slide . "<img class='feature_image " . (empty($options[$option]) ? 'fullpage' : '') . "' src='" . $options[$option . "_image_url"] . "'/>";
                         }
-                        $slide = $slide . $options[$option] . "</div>";
+                        $slide = $slide . "<iframe allowfullscreen='true' width='100%' height='100%' style='border:none; overflow:hidden;' scrolling='no' src='about:blank' srcdoc='<center>" . trim(htmlspecialchars(apply_filters('the_content', $options[$option]))) . "</center>'></iframe></div>";
                         $slides[] = $slide;
                     }
                 }
@@ -620,7 +625,7 @@ function simplepresenter_public_parse_request($wp) {
         <div id='simplepresenter_logo'></div>
 
         <?php foreach ($slides as $slide) { ?>
-            <div class='simplepresenter_slide'><?php echo apply_filters('the_content', $slide) ?></div>
+            <div class='simplepresenter_slide'><?php echo $slide ?></div>
         <?php } ?>
 
         <style>
@@ -748,10 +753,6 @@ function simplepresenter_public_parse_request($wp) {
 
             for (var i = 0; i < slides.length; i++) {
                 slides[i].style.display = "none";
-                var frames = slides[i].getElementsByTagName("iframe");
-                for (var j = 0; j < frames.length; j++) {
-                   frames[j].contentWindow.location.href = "about:blank";
-                }
             }
 
             var currentSlide = slides[currentSlideId];
@@ -761,7 +762,7 @@ function simplepresenter_public_parse_request($wp) {
 
             var frames = currentSlide.getElementsByTagName("iframe");
             for (var i = 0; i < frames.length; i++) {
-                frames[i].contentWindow.location.href = frames[i].src;
+                frames[i].contentWindow.location.reload();
             }
 
             var customSlideTime = currentSlide.children[0].getAttribute("data-time");
