@@ -3,7 +3,7 @@ Contributors: sylviavanos
 Tags: presentation, monitor, raspberry, pi, digital signage
 Requires at least: 4.9.4
 Tested up to: 4.9
-Stable tag: 1.4
+Stable tag: 1.4.2
 Requires PHP: 5.4.16
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
