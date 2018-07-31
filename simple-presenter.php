@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple Presenter
 Description: A simple way to manage presentation screens (AKA: Digital Signage)
-Version: 1.5
+Version: 1.5.1
 Author: Sylvia van Os
 License: GPL3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -328,8 +328,6 @@ function simplepresenter_extraslides_text() {
     echo '<ol>';
     echo '<li>With "Upload Image" you can upload a feature image. This will fill the whole slide, unless custom HTML is added. If custom HTML is added, the feature image will display on the left half of the screen.</li>';
     echo '<li>If no feature image is set, custom HTML will get the space of the whole slide.</li>';
-    echo '<li>For custom HTML content that should fill the slide, consider using high width and height values such as 99999. Simple Presenter will ensure it will stay within the slide frame.</li>';
-    echo '<li>When embedding video, such as from YouTube, ensure that autoplay is enabled.</li>';
     echo '</ol>';
 }
 
@@ -599,7 +597,7 @@ function simplepresenter_public_parse_request($wp) {
                         if ($options[$option . "_image_url"]) {
                             $slide = $slide . "<img class='feature_image " . (empty($options[$option]) ? 'fullpage' : '') . "' src='" . $options[$option . "_image_url"] . "'/>";
                         }
-                        $slide = $slide . "<iframe " . ($options[$option . "_image_url"] ? "" : "allowfullscreen='true'") . " width='100%' height='100%' style='border:none; overflow:hidden;' scrolling='no' src='about:blank' data-srcdoc='<center>" . trim(htmlspecialchars(apply_filters('the_content', $options[$option]))) . "</center>'></iframe></div>";
+                        $slide = $slide . "<iframe " . ($options[$option . "_image_url"] ? "" : "allowfullscreen='true'") . " style='border:none; overflow:hidden;' scrolling='no' src='about:blank' data-srcdoc='<style>* { max-width: 100%; max-height: 100%; width: 100%; height: 100%; margin: 0px; }</style><center>" . trim(htmlspecialchars(apply_filters('the_content', $options[$option]))) . "</center>'></iframe></div>";
                         $slides[] = $slide;
                     }
                 }
@@ -657,7 +655,7 @@ function simplepresenter_public_parse_request($wp) {
             border-radius: 20px 20px 20px 20px;
             overflow: hidden;
         }
-        .simplepresenter_slide div {
+        .simplepresenter_slide div, .simplepresenter_slide iframe {
             width: 100%;
             height: 100%;
         }

@@ -1,4 +1,7 @@
 == Changelog ==
+= 1.5.1 =
+* Fix - Sizing issues with YouTube videos and the likes
+
 = 1.5 =
 * Enhancement - Add custom capability (manage_simplepresenter) to allow more control over who can manage it
 * Fix - Regression in 1.4.2 causing the feature image to not be shown

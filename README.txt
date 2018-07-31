@@ -3,7 +3,7 @@ Contributors: sylviavanos
 Tags: presentation, monitor, raspberry, pi, digital signage
 Requires at least: 4.9.4
 Tested up to: 4.9
-Stable tag: 1.5
+Stable tag: 1.5.1
 Requires PHP: 5.4.16
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -37,7 +37,6 @@ Simple Presenter is meant to be simple above powerful and is written for the pur
 There are many ways to go about it, but personally, we recommend [minimalKioskOS](https://github.com/TheLastProject/minimalKioskOS) on a Raspberry Pi.
 
 The recommended settings are as follows:
-- /boot/mutesound.txt: 10
 - /boot/spamkey.txt: f (if you want videos to play fullscreen, otherwise empty)
 - /boot/url.txt: The URL shown on "View screen X"
 
@@ -46,8 +45,7 @@ The recommended settings are as follows:
 Yes! Just make sure to change the slide length to the length of the video and put a YouTube/Vimeo/etc. embed code in the custom HTML field.
 
 Some gotchas:
-- Make sure to enable autoplay in the embed, or the video won't play
-- You probably want to manually set the width and height of the iframe to a high value like 99999, Simple Presenter's CSS should keep it from getting bigger than the screen.
+- Make sure to enable autoplay in the embed, or the video won't play (for YouTube, this means adding &autoplay=1 to the end of the URL)
 
 == Screenshots ==
 
@@ -58,7 +56,5 @@ Some gotchas:
 
 == Changelog ==
 
-= 1.5 =
-* Enhancement - Add custom capability (manage_simplepresenter) to allow more control over who can manage it
-* Fix - Regression in 1.4.2 causing the feature image to not be shown
-* Fix - Improve reliability loading embeds/iframes
+= 1.5.1 =
+* Fix - Sizing issues with YouTube videos and the likes
